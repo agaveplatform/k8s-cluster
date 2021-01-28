@@ -1,0 +1,3 @@
+[submodule "kubespray"]
+	path = submodules/kubespray
+	url = git@github.com:agaveplatform/kubespray.git
