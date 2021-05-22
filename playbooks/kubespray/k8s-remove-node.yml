@@ -1,0 +1,17 @@
+---
+# k8s-cluster.yml
+# Run this playbook to deploy and configure a new cluster from scratch.
+#
+# Assumptions:
+# Ubuntu 20.04 LTS is assumed
+#
+# Varables:
+#
+# Example invocation:
+#
+# ansible-playbook playbooks/kubespray/k8s-remove-node.yml -b -e node=example-k8s-node-1,example,k8s-node-2
+#
+
+- name: Spray cluster
+  become: yes
+  import_playbook: ../../submodules/zonca/remove-node.yml

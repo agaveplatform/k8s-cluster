@@ -1,0 +1,38 @@
+---
+- name: Install krew
+  import_role:
+    name: ansible-role-kubectl-krew
+  vars:
+    krew_plugins: []
+
+- name: Upgrade krew
+  shell: kubectl krew upgrade
+
+- name: Add AppsCode’s kubectl plugin index.
+  shell: kubectl krew index add appscode https://github.com/appscode/krew-index.git
+
+- name: Upgrade krew plugin indexes
+  shell: kubectl krew update
+
+- name: Check for appscode/dba install
+  shell: kubectl krew list | grep ^appscode/dba
+  register: check_appscode_dba
+
+- name: Install KubeDB kubectl plugin
+  shell: kubectl krew install appscode/dba
+  when:
+    - check_appscode_dba is not success
+    - check_appscode_dba.stdout == ''
+
+- name: Upgrade krew plugin to update the KubeDB kubectl plugin
+  shell: kubectl krew upgrade
+  when:
+    - check_appscode_dba is success
+    - check_appscode_dba.stdout != ''
+
+- name: Check  KubeDB kubectl plugin version
+  shell: kubectl dba version
+  register: dba_version
+
+- debug:
+    msg: "{{ dba_version.stdout }}"

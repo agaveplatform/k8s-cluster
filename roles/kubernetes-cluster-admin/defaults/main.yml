@@ -1,0 +1,4 @@
+---
+# defaults file for kubernetes-service-users
+#kubernetes_cluster_admin_ldap_groups: ['admin']
+kubernetes_cluster_admin_service_accounts: ['default']

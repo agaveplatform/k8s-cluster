@@ -1,0 +1,2 @@
+# if true will remove cert-manager prior to installing
+cert_manager_issuers_clear_stack: false

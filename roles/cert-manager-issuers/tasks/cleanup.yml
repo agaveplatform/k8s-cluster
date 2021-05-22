@@ -1,0 +1,15 @@
+---
+
+- name: Create secret for default ca
+  community.kubernetes.k8s:
+    state: absent
+    definition: "{{ lookup('template', 'ca-secret.yml') }}"
+
+- name: Install Issuers
+  community.kubernetes.k8s:
+    state: absent
+    definition: "{{ lookup('template', item) }}"
+  loop:
+    - issuers/acme-prod-issuer.yml.j2
+    - issuers/acme-staging-issuer.yml.j2
+    - issuers/ca-issuer.yml.j2

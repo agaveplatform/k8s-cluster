@@ -1,0 +1,13 @@
+---
+- name: Remove cert-manager helm chart
+  community.kubernetes.helm:
+    release_namespace: "{{ cert_manager_namespace }}"
+    release_state: absent
+    name: cert-manager
+
+- name: Delete default issuer
+  community.kubernetes.k8s:
+    state: absent
+    definition: "{{ lookup('template', item) }}"
+  loop:
+    - self-signed-issuer.yml.j2

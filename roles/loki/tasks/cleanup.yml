@@ -1,0 +1,20 @@
+---
+# Cleans out a previous deployment along with custom resource types
+
+
+- name: "Remove loki chart"
+  community.kubernetes.helm:
+    release_namespace: "{{ loki_namespace }}"
+    release_state: absent
+    name: loki
+
+- name: "Remove Promtail chart"
+  community.kubernetes.helm:
+    release_namespace: "{{ loki_namespace }}"
+    release_state: absent
+    name: promtail
+
+- name: "Remove Eventrouter"
+  community.kubernetes.k8s:
+    state: absent
+    definition: "{{ lookup('file', 'eventrouter.yml') }}"

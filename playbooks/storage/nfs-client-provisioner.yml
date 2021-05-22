@@ -1,0 +1,32 @@
+---
+# nfs-client-provisioner.yml
+# Run this playbook to install and configure nfs client provisioner and storageclass.
+#
+# Assumptions:
+# The nfs server should already exist
+#
+# Varables:
+# clear_stack: to clear the storageclasse before recreating them
+#
+# Example invocation:
+# ansible-playbook playbooks/storage/nfs-client-provisioner.yml
+#
+
+- name: Create nfs client provisioner and storage class
+  hosts: kube-master[0]
+  become: yes
+
+  vars:
+    clear_stack: False
+
+  roles:
+    - name: Create a persistent nfs storageclass
+      role: nfs-client-provisioner
+      vars:
+        nfs_client_provisioner_clear_stack: "{{ clear_stack|bool }}"
+        nfs_client_provisioner_server: "{{ nfs_server }}"
+        nfs_client_provisioner_path: "{{ nfs_path }}"
+      tags:
+        - nfs
+        - storageclass
+

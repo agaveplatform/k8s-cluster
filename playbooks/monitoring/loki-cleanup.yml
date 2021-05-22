@@ -1,0 +1,78 @@
+---
+# loki-cleanup.yml
+# Run this playbook to remove loki and promtail from the cluster.
+#
+# Variables:
+# `clear_data`: if true, loki's persistent volume and promtail's position file
+#      are removed. This fully resets the log data. Default: false
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playbooks/monitoring/loki-cleanup.plbk
+#
+
+- name: Remove prometheus operator and current deployment
+  hosts: kube-master[0]
+  become: yes
+  gather_facts: no
+
+  vars:
+    clear_data: false
+
+  tasks:
+    - name: Remove loki stack
+      import_role:
+        name: loki
+        tasks_from: cleanup.yml
+      vars:
+        loki_clear_chart: True
+      tags:
+        - loki
+        - promtail
+        - operator
+
+    - name: Look for persistent volumes by claim
+      shell: kubectl -n monitoring get pvc storage-loki-0 -o json | jq -r '.items[].spec.volumeName'
+      register: kubectl_list_loki_pv
+      ignore_errors: yes
+      when:
+        - clear_data | bool
+      tags:
+        - promtail
+
+    - name: Delete loki pvc
+      shell: kubectl -n monitoring delete pvc storage-loki-0
+      when:
+        - clear_data | bool
+      ignore_errors: true
+      tags:
+        - promtail
+
+    - name: Delete loki pv
+      shell: kubectl -n monitoring delete pv kubectl_list_loki_pv.stdout
+      when:
+        - clear_data | bool
+        - kubectl_list_loki_pv is success
+        - kubectl_list_loki_pv.stderr == ''
+        - kubectl_list_loki_pv.stdout != ''
+      tags:
+        - promtail
+
+- name: Remove promtail position file to reset all tails to beginning on next startup
+  hosts: k8s-cluster
+  become: yes
+  gather_facts: no
+
+  vars:
+    clear_data: false
+
+  tasks:
+    - name: Remove promtail position file from each node
+      file:
+        state: absent
+        path: /run/promtail/positions.yaml
+      when:
+        - clear_data | bool
+      tags:
+        - promtail
+        - log-tail-positions
+

@@ -1,0 +1,72 @@
+---
+# local-path-provisioner-cleanup.yml
+# Run this playbook to remove local_path_provisioner, storageclasses, etc. There are
+# some race conditions inherent here. The finalizers can help fix worst case scenarios.
+# A final run with `clear_data=True` must be performed before reinstalling rook regardless.
+#
+# Variables:
+# `remove_finalizer`: Clears finalizers on the various resources to ensure things clear out in the
+#     the CRD are deleted before the resources themselves. Default: False
+# `clear_data`: Clears the raw data on disk. Default: False
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playboks/storage/local-path-provisioner-cleanup.yml
+#
+
+- name: Remove prometheus operator and current deployment
+  hosts: kube-master[0]
+  become: yes
+
+  vars:
+    clear_chart: True
+    remove_finalizer: False
+
+  tasks:
+    # TODO: we should ensure that all the cephfs pv are cleaned up before we continue
+    - name: List existing PVC and PV
+      shell: kubectl get pvc --all-namespaces | grep -v "^NAMESPACE" | awk '{print "kubectl delete -n "$1" pvc "$2}'
+      when:
+        - clear_data|bool == True
+      register: get_pvc
+      ignore_errors: true
+      tags:
+        - remove_data
+        - pvc
+        - local
+
+    - name: Removes existing PVC and PV
+      shell: "{{ item }}"
+      when:
+        - clear_data|bool == True
+      loop: "{{ get_pvc.stdout_lines }}"
+      ignore_errors: true
+      tags:
+        - remove_data
+        - pvc
+        - local
+
+    - name: Remove StorageClass
+      community.kubernetes.k8s:
+        state: absent
+        definition: |-
+          apiVersion: storage.k8s.io/v1
+          kind: StorageClass
+          metadata:
+            name: {{ item }}
+      loop:
+        - "{{ project_name }}-fast-work"
+        - "{{ project_name }}-fast-scratch"
+        - cephfs-ops
+      tags:
+        - local
+        - storageclass
+
+    - name: Remove local-path-provisioner csi plugin
+      import_role:
+        name: local-path-provisioner
+        tasks_from: cleanup.yml
+      vars:
+        local_path_provisioner_clear_chart: "{{ clear_chart }}"
+      tags:
+        - local
+        - provisioner

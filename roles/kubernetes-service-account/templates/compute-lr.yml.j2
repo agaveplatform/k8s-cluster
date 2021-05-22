@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-request
+spec:
+  type: Container
+  limits:
+{% if kubernetes_service_account_resource.limit %}
+    - default:
+        {{ kubernetes_service_account_resource.limit | to_yaml | indent(width=8, indentfirst=False) }}
+{% endif %}
+{% if kubernetes_service_account_resource.default %}
+      defaultRequest:
+        {{ kubernetes_service_account_resource.default | to_yaml | indent(width=8, indentfirst=False) }}
+{% endif %}

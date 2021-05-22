@@ -1,0 +1,14 @@
+---
+# tasks file for nfs-storageclass
+- name: Remove previous NFS storage class
+  community.kubernetes.k8s:
+    state: absent
+    definition: "{{ lookup('template', 'storageclass.yml.j2') }}"
+  when:
+    - nfs_storageclass_clear_stack|bool
+
+
+- name: Applying the named NFS storage class
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'storageclass.yml.j2') }}"

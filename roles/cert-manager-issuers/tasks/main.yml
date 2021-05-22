@@ -1,0 +1,27 @@
+---
+- name: Clean up existing install
+  include_tasks: cleanup.yml
+  when:
+    - cert_manager_issuers_clear_stack|bool
+
+- name: Read ca.pem from kube master
+  shell: cat {{ kube_cert_dir }}/ca.crt | base64 -w 0
+  register: ca_crt_response
+
+- name: Read ca-key.pem from kube master
+  shell: cat {{ kube_cert_dir }}/ca.key | base64 -w 0
+  register: ca_key_response
+
+- name: Create secret for default ca
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'ca-secret.yml.j2') }}"
+
+- name: Install Issuers
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) }}"
+  loop:
+    - issuers/acme-prod-issuer.yml.j2
+    - issuers/acme-staging-issuer.yml.j2
+    - issuers/ca-issuer.yml.j2

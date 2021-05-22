@@ -1,0 +1,31 @@
+# custom project name for namespacing deployments
+project_name: agave
+
+# name of the linux service account used to deploy the cluster
+agave_linux_user_name: agaveops
+
+# namespaces to be used for cicd pipelines
+devops_namespaces:
+- develop
+- staging
+- qa
+- production
+
+############################
+# Blackbox exporter
+############################
+
+# list of hostname or ip and port to check via blackbox exporter
+prometheus_operator_prometheus_blackbox_targets:
+  - http://requestbin.agaveplatform.org
+  - https://requestbin.agaveplatform.org
+  - http://httpbin.agaveplatform.org
+  - https://requestbin.agaveplatform.org
+  - http://agaveplatform.org
+  - https://docs.agaveplatform.org
+  - http://jenkins.ops.agaveplatform.org/jenkins
+  - https://nexus.agaveplatform.org
+  - https://support.agaveplatform.org
+  - https://microsites.agaveplatform.org
+  - https://status.agaveplatform.org
+  - https://togo.agaveplatform.org

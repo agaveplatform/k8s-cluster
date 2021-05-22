@@ -1,0 +1,28 @@
+---
+# main.yml
+# Run this playbook to install Jetstack's cert-manager with ClusterIssuer
+# to generate ssl certs from the kubernetes CA, Acme, and Acme staging
+# server.
+#
+# Variables:
+# - clear_chart: Clears the chart and custom resource
+#      definitions prior to installing the new chart. Default: false
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playbooks/certs/main.yml
+#
+- name: Install cert-manager
+  hosts: kube-master[0]
+  gather_facts: yes
+  become: yes
+
+  roles:
+    - role: cert-manager
+      tags:
+        - cert
+
+    - role: cert-manager-issuers
+      tags:
+        - cert
+        - issuers
+

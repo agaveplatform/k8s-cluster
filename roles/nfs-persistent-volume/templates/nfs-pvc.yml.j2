@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ nfs_persistent_volume_name }}-pvc
+{% if nfs_persistent_volume_namespace is defined and nfs_persistent_volume_namespace != '' %}
+  namespace: {{ nfs_persistent_volume_namespace }}
+  labels:
+    app: {{ nfs_persistent_volume_name }}
+{% endif %}
+spec:
+{% if nfs_persistent_volume_add_storage_class|bool %}
+  storageClassName: {{ nfs_persistent_volume_name }}-nfs
+{% endif %}
+  accessModes:
+    - {{ nfs_persistent_volume_claim_access_mode }}
+  resources:
+    requests:
+      storage: {{ nfs_persistent_volume_claim_size }}
+  selector:
+    matchLabels:
+      source: cluster-nfs
+      purpose: scratch
+      target: {{ nfs_persistent_volume_name }}

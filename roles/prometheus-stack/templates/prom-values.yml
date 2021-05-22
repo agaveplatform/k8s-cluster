@@ -1,0 +1,90 @@
+#jinja2:variable_start_string:'[%' , variable_end_string:'%]'
+prometheusOperator:
+  admissionWebhooks:
+    certManager:
+      enabled: true
+
+  prometheusSpec:
+    ## Secrets is a list of Secrets in the same namespace as the Prometheus object, which shall be mounted into the Prometheus Pods.
+    ## The Secrets are mounted into /etc/prometheus/secrets/. Secrets changes after initial creation of a Prometheus object are not
+    ## reflected in the running Pods. To change the secrets mounted into the Prometheus Pods, the object must be deleted and recreated
+    ## with the new list of secrets.
+    ##
+    secrets:
+      - etcd-client-cert # etcd client certs
+
+additionalPrometheusRulesMap:
+- name: blackbox-ssl-expiry.rules
+  groups:
+    - name: blackbox_ssl_expiry
+      rules:
+        - alert: SSLCertExpiringSoon
+          expr: probe_ssl_earliest_cert_expiry{job="blackbox"} - time() < 86400 * 30
+          for: 10m
+    - name: blackbox_unreachable
+      rules:
+        - alert: SiteUnreachable
+          expr: probe_success{job="blackbox"} < 1
+          for: 10m
+
+
+
+grafana:
+  ingress:
+    enabled: true
+    hosts:
+        - insights.ops.agaveplatform.org
+
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClassName: [% prometheus_operator_storage_class %]
+    subPath: /grafana
+    accessModes:
+      - ReadWriteOnce
+
+  ldap:
+    enabled: true
+    existingSecret: grafana-ldap
+    config: |
+      [% lookup('template', 'ldap.toml.j2') | indent(width=6, indentfirst=False) %]
+
+  additionalDataSources:
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki.monitoring.svc:3100
+
+kubeEtcd:
+  enabled: true
+
+  ## If your etcd is not deployed as a pod, specify IPs it can be found on
+  ##
+  endpoints:
+{% for etcd_host in groups['etcd'] %}
+    - [% hostvars[etcd_host]['ip'] %]
+{% endfor %}
+
+  ## Configure secure access to the etcd cluster by loading a secret into prometheus and
+  ## specifying security configuration below. For example, with a secret named etcd-client-cert
+  ##
+  serviceMonitor:
+    scheme: https
+    insecureSkipVerify: true
+    serverName: null
+    caFile: /etc/prometheus/secrets/etcd-client-cert/etcd-ca
+    certFile: /etc/prometheus/secrets/etcd-client-cert/etcd-client
+    keyFile: /etc/prometheus/secrets/etcd-client-cert/etcd-client-key
+
+## Component scraping kube scheduler
+##
+kubeScheduler:
+  enabled: true
+
+  ## If using kubeScheduler.endpoints only the port and targetPort are used
+  ##
+  service:
+    port: 10259
+    targetPort: 10259
+    selector:
+      component : kube-scheduler

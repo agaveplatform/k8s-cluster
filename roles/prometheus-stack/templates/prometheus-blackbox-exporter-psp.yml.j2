@@ -1,0 +1,125 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  labels:
+    app: prometheus-blackbox-exporter
+  name: prometheus-blackbox-exporter
+spec:
+  allowPrivilegeEscalation: true
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 0
+    rule: MustRunAs
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 0
+    rule: MustRunAs
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
+  - persistentVolumeClaim
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: prometheus-blackbox-exporter
+  name: prometheus-blackbox-exporter
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes/metrics
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - nodes/proxy
+  - services
+  - endpoints
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: prometheus-blackbox-exporter
+  name: prometheus-blackbox-exporter
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus-blackbox-exporter
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: monitoring
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: prometheus-blackbox-exporter
+  name: prometheus-blackbox-exporter-psp
+  namespace: monitoring
+rules:
+- apiGroups:
+  - "policy"
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  - prometheus-blackbox-exporter
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: prometheus-blackbox-exporter
+  name: prometheus-blackbox-exporter-psp
+  namespace: monitoring
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus-blackbox-exporter-psp
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: monitoring
+

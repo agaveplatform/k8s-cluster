@@ -1,0 +1,6 @@
+---
+# name of the storageclass
+nfs_storageclass_name: nsf
+
+# True if storageclass should be removoed first
+nfs_storageclass_clear_stack: False

@@ -1,0 +1,14 @@
+---
+# tasks file for local-storageclass
+- name: Remove previous local storage class
+  community.kubernetes.k8s:
+    state: absent
+    definition: "{{ lookup('template', 'storageclass.yml.j2') }}"
+  when:
+    - local_storageclass_clear_stack|bool
+
+
+- name: Applying the named local storage class
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'storageclass.yml.j2') }}"

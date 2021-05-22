@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-resources
+spec:
+  hard:
+{% if kubernetes_service_account_resource.limit.cpu != '' %}
+    requests.cpu: "{{kubernetes_service_account_resource.limit.cpu }}"
+{% endif %}
+{% if kubernetes_service_account_resource.limit.memory != '' %}
+    requests.memory: "{{ kubernetes_service_account_resource.limit.memory }}"
+{% endif %}
+{% if kubernetes_service_account_resource.limit['nvidia.com/gpu'] != '' %}
+    requests.nvidia.com/gpu: {{ kubernetes_service_account_resource.limit['nvidia.com/gpu'] }}
+{% endif %}

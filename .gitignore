@@ -1,0 +1,29 @@
+# ansible
+*.retry
+
+# misc.
+.*.swp
+
+# ignore virtualenvironments
+.venv
+venv
+
+# project import exclusions
+/roles/galaxy/
+/collections/*
+/inventory/develop/artifacts/
+/inventory/production/artifacts/
+/inventory/develop/credentials/
+/inventory/production/credentials/
+inventory/*/group_vars/all/kubedb.yml
+inventory/*/hosts.yml
+
+
+# Terraform state and cache files
+.terraform.lock.hcl
+terraform.tfstate*
+.terraform
+openrc.sh
+id_rsa
+id_rsa.pub
+

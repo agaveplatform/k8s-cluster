@@ -1,0 +1,23 @@
+---
+# main.yml
+# Run this playbook to install and configure the kubedb operator and cli.
+#
+# Assumptions:
+# This playbook assumes a working kubernetes installation via kubespray.
+#
+# Varables:
+# `kubedb_community_chart_version`: The version of the kubedb helm chart to install
+# `kubedb_catalog_chart_version`: The version of the kubedb catalog helm chart to install
+#
+# Example invocation:
+# ansible-playbook playbooks/database/kubedb.yml
+# ansible-playbook playbooks/database/kubedb.yml -e kubedb_version=1.0
+#
+
+- name: Installing kubedb
+  hosts: kube-master[0]
+  gather_facts: false
+  become: yes
+
+  roles:
+    - role: kubedb

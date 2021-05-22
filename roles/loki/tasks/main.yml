@@ -1,0 +1,64 @@
+---
+
+- name: Clear previous deployment
+  include_tasks: cleanup.yml
+  when:
+    - loki_clear_chart|bool
+
+- name: Ensure grafana helm repo is present
+  community.kubernetes.helm_repository:
+    name: grafana
+    repo_url: "https://grafana.github.io/helm-charts"
+    repo_state: present
+
+- name: "Install Loki to aggregate and filter logs from promtail"
+  community.kubernetes.helm:
+    name: loki
+    chart_ref: grafana/loki
+    update_repo_cache: true
+    release_namespace: "{{ loki_namespace }}"
+    create_namespace: true
+    release_values: "{{ lookup('template', 'loki-values.yml.j2') | from_yaml }}"
+    chart_version: "{{ loki_version }}"
+    release_state: present
+
+- name: "Install Promtail daemonset to scrape logs from every node"
+  community.kubernetes.helm:
+    name: promtail
+    chart_ref: grafana/promtail
+    update_repo_cache: true
+    release_namespace: "{{ loki_namespace }}"
+    create_namespace: true
+    release_values: "{{ lookup('template', 'promtail-values.yml.j2') | from_yaml }}"
+    chart_version: "{{ promtail_version }}"
+    release_state: present
+
+- name: "Install Eventrouter to publish kubernetes events to loki as logs"
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('file', 'eventrouter.yml') }}"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

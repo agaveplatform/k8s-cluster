@@ -1,0 +1,30 @@
+---
+# nfs-client-provisioner-cleanup.yml
+# Run this playbook to install and configure nfs client provisioner and storage class.
+#
+# Assumptions:
+#
+# Varables:
+#
+# Example invocation:
+# ansible-playbook playbooks/storage/nfs-client-provisioner-cleanup.yml
+#
+
+- name: Create cluster baseline storage classes
+  hosts: kube-master[0]
+  become: yes
+
+  tasks:
+    - name: Delete nfs storage class
+      import_role:
+        name: nfs-client-provisioner
+        tasks_from: cleanup.yml
+      vars:
+        nfs_client_provisioner_clear_stack: True
+      tags:
+        - nfs
+        - storageclass
+        - ops
+
+
+

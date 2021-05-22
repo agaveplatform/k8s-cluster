@@ -1,0 +1,112 @@
+---
+# cluster-dump.yml
+# Run this playbook to export and backup kubernetes resources by namespace. System namespaces are excluded, and
+# no guarantee is made with respect to importing the dump. It is very likely that simply importing the dump will
+# not work as certificates may be rotated and no longer valid, and some Helm applications are likely to be included
+# in the dump and thus, would break the application upon import.
+#
+# Assumptions:
+# This playbook assumes an admin kubeconfig file in place on the kube-master node.
+#
+# Varables:
+# `backup_path`: Path to the backup folder. Default: {{ playbook_dir }}/{{project_name}}
+# `exclude_namespaces`: The namespaces to backup. Defaults to all core config namespaces.
+#
+# Example invocation:
+# ansible-playbook -i inventory/hosts playbooks/backup/cluster-dump.yml
+#
+
+- hosts: kube-master[0]
+  gather_facts: yes
+  become: yes
+
+  vars:
+    backup_path: "/tmp/backups/{{ project_name }}/{{ ansible_date_time.epoch }}"
+    exclude_namespaces:
+      - kube-system
+      - default
+      - cert-manager
+      - monitoring
+      - logging
+      - dex
+      - kube-public
+      - local-provisioner
+      - cephfs
+      - metallb-system
+      - kubedb
+
+  tasks:
+
+    - name: Ensure local backup dir exists
+      file:
+        state: directory
+        path: "{{ backup_path }}"
+        mode: 0700
+      delegate_to: localhost
+      delegate_facts: yes
+      become: false
+      tags:
+        - setup
+
+    - name: Export the cluster namespaces
+      shell: kubectl get ns -o json | jq '{{ exclude_namespaces | to_json }} as $blacklist | .items[] | select(.metadata.name as $in | $blacklist | index($in) | not) | del(.status, .metadata.uid, .metadata.selfLink, .metadata.resourceVersion, .metadata.annotations["kubectl.kubernetes.io/last-applied-configuration"], .metadata.creationTimestamp, .metadata.generation, .spec )'
+      register: kubectl_ns_response
+      tags:
+      - kube-namespaces
+
+    - name: Write namespaces to local backup dir
+      copy:
+        content: "{{ kubectl_ns_response.stdout }}"
+        dest: "{{ backup_path }}/__ns.json"
+      delegate_to: localhost
+      delegate_facts: yes
+      become: false
+      tags:
+      - kube-namespaces
+
+    - name: Parse list of namespaces
+      shell: kubectl get ns -o=jsonpath='{.items[*].metadata.name}'
+      register: kubectl_ns_names_response
+      tags:
+        - kube-resources
+
+    - name: Fetch content for each namesapce
+      shell: kubectl get sa,svc,rc,secrets,ds,deploy,rs,po,cm,roles,rolebindings,pvc -n "{{ ns }}" -o json  | jq '.items[] | select(.type!="kubernetes.io/service-account-token") | del( .spec.clusterIP, .metadata.uid, .metadata.selfLink, .metadata.resourceVersion, .metadata.creationTimestamp, .metadata.generation, .status, .spec.template.spec.securityContext, .spec.template.spec.dnsPolicy, .spec.template.spec.terminationGracePeriodSeconds, .spec.template.spec.restartPolicy )'
+      register: kube_namespace_resources
+      loop: "{{ kubectl_ns_names_response.stdout.split(' ') | difference(exclude_namespaces) }}"
+      loop_control:
+        loop_var: ns
+      tags:
+        - kube-resources
+
+    - name: Write namespace resources to local backup dir
+      copy:
+        content: "{{ item.stdout }}"
+        dest: "{{ backup_path }}/{{item.ns}}.json"
+      loop: "{{ kube_namespace_resources.results }}"
+      loop_control:
+        label: "{{ item.ns }}"
+      delegate_to: localhost
+      delegate_facts: yes
+      become: false
+      tags:
+        - kube-resources
+
+    - name: Fetch cluster level resources
+      shell: kubectl get podsecuritypolicy,clusterroles,clusterrolebindings,pv -o json  | jq '.items[] | select(.type!="kubernetes.io/service-account-token") | del( .spec.clusterIP, .metadata.uid, .metadata.selfLink, .metadata.resourceVersion, .metadata.creationTimestamp, .metadata.generation )'
+      register: kube_cluster_resources
+      tags:
+        - kube-cluster-resources
+
+    - name: Write cluster resources to local backup dir
+      copy:
+        content: "{{ kube_cluster_resources.stdout }}"
+        dest: "{{ backup_path }}/_cluster.json"
+      delegate_to: localhost
+      delegate_facts: yes
+      become: false
+      tags:
+        - kube-cluster-resources
+
+    - debug:
+        msg: "Backup completed. YAML files stored at {{ backup_path }}."

@@ -1,0 +1,32 @@
+---
+# cleanup.yml
+# Run this playbook to remove kubedb from the cluster.
+#
+# Variables:
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playbooks/database/cleanup.plbk
+#
+
+- name: Remove prometheus operator and current deployment
+  hosts: kube-master[0]
+  become: yes
+  gather_facts: no
+
+  vars:
+    clear_data: false
+
+  tasks:
+    - name: Remove kubedb stack
+      import_role:
+        name: kubedb
+        tasks_from: cleanup.yml
+      vars:
+        kubedb_clear_chart: True
+      tags:
+        - loki
+        - promtail
+        - operator
+
+
+

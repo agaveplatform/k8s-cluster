@@ -1,0 +1,28 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: local-path-provisioner
+spec:
+  allowPrivilegeEscalation: true
+  forbiddenSysctls: []
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 0
+    rule: MustRunAs
+  requiredDropCapabilities: []
+  hostNetwork: false
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 0
+    rule: MustRunAs
+  allowedHostPaths:
+  - pathPrefix: {{ local_path_provisioner_path }}
+    readOnly: false
+  volumes:
+  - '*'

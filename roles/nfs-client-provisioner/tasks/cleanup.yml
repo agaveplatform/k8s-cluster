@@ -1,0 +1,7 @@
+---
+- name: "Remove nfs-client-provisioner to access nfs repos"
+  community.kubernetes.helm:
+    name: nfs-client-provisioner
+    update_repo_cache: false
+    release_namespace: "{{ nfs_client_provisioner_namespace }}"
+    release_state: absent

@@ -1,0 +1,30 @@
+# Run this playbook to install a custom prometheus stack in the cluster.
+# Data will be saved to persistent volumes on a cluster-wide nfs server.
+#
+# Variables:
+# - `clear_chart`: Clears the chart prior to installing the new chart. Default: false
+# - `storage_class`: The storage class to use to persist data. Default: local-hdd
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playbooks/monitoring/prometheus.yml
+#
+
+- name: Initialize prometheus operator and metrics collectors
+  hosts: kube-master[0]
+  become: yes
+  gather_facts: false
+
+  vars:
+    clear_chart: false
+    storage_class: local-hdd
+
+  roles:
+    - role: prometheus-stack
+      vars:
+        prometheus_operator_clear_chart: "{{ clear_chart | bool }}"
+        prometheus_operator_prometheus_storage_class: "{{ storage_class }}"
+        prometheus_operator_alertmanager_storage_class: "{{ storage_class }}"
+        prometheus_operator_grafana_storage_class: "{{ storage_class }}"
+      tags:
+        - prometheus
+        - operator

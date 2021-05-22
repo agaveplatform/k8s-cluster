@@ -1,0 +1,24 @@
+---
+# prometheus-cleanup.yml
+# Run this playbook to remove prometheus and all exporters from the cluster.
+#
+# Variables:
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playbooks/monitoring/prometheus-cleanup.yml
+#
+
+- name: Remove prometheus stack
+  hosts: kube-master[0]
+  become: yes
+
+  tasks:
+    - name: Remove stack
+      import_role:
+        name: prometheus-stack
+        tasks_from: cleanup.yml
+      vars:
+        prometheus_operator_clear_chart: True
+      tags:
+        - prometheus
+        - operator

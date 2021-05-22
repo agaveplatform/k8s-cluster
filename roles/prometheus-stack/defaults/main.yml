@@ -1,0 +1,72 @@
+---
+# namespace in which to deploy the stack
+prometheus_operator_namespace: monitoring
+
+# Clears the chart and custom resource definitions prior to
+# installing the new chart.
+prometheus_operator_clear_chart: false
+
+############################
+# Prometheus
+############################
+
+# version of prometheus-stack chart
+prometheus_operator_version: 13.4.1
+
+# storage class used to store prometheus metrics
+prometheus_operator_prometheus_storage_class: nfs
+
+# size of the prometheus pvc
+prometheus_operator_prometheus_pvc_size: 20Gi
+
+# how long should prometheus metrics be kept
+prometheus_operator_prometheus_retention: 30d
+
+# how frequently should metrics be scraped. Note, scraping more frequently than the metrics server 15s interval
+# is not productive
+prometheus_operator_prometheus_scrape_interval: 15s
+
+############################
+# Alertmanager
+############################
+
+# how long should alertmanager history be ketp
+prometheus_operator_alertmanager_retention: 14h
+
+# webhook to slack channel for alertmanager alerts
+prometheus_operator_slack_webhook_url:
+
+# storage class used to store alertmanager history
+prometheus_operator_alertmanager_storage_class: nfs
+
+# size of the alertmanager pvc
+prometheus_operator_alertmanager_pvc_size: 2Gi
+
+############################
+# Grafana
+############################
+
+# Default password for grafana admin user
+prometheus_operator_grafana_admin_password: admin
+
+# storage class used to store grafana db and state
+prometheus_operator_grafana_storage_class: nfs
+
+# size of the prometheus pvc
+prometheus_operator_grafana_pvc_size: 2Gi
+
+# The ingress to ask metallb to assign to the grafana service
+prometheus_operator_grafana_hostname: ops.example.com
+
+############################
+# Blackbox exporter
+############################
+
+# version of prometheus-blackbox-operator chart
+prometheus_operator_prometheus_blackbox_version: 1.0.3
+
+# list of hostname or ip and port to check via blackbox exporter
+prometheus_operator_prometheus_blackbox_targets: []
+
+# number of blackbox exporter replicas to run
+prometheus_operator_prometheus_blackbox_replicas: 1

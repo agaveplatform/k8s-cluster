@@ -1,0 +1,9 @@
+---
+# namespace in which to deploy root
+local_path_provisioner_namespace: local-path-storage
+
+# Local path to store the provisioner
+local_path_provisioner_path: /extra/local-path-provisioner
+
+# Should all data be cleared
+local_path_provisioner_clear_data: False

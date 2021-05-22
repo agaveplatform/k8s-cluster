@@ -1,0 +1,2980 @@
+#jinja2:variable_start_string:'[%' , variable_end_string:'%]'
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-operator-storage-alerter
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+    app: prometheus-operator-grafana
+    chart: prometheus-operator-[% prometheus_operator_version %]
+data:
+  prometheus-operator-storage-alerter.json: |
+    {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "id": 32,
+    "iteration": 1602877516998,
+    "links": [],
+    "panels": [
+      {
+        "dashboardFilter": "",
+        "dashboardTags": [],
+        "datasource": null,
+        "folderId": null,
+        "gridPos": {
+          "h": 14,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "id": 39,
+        "limit": 10,
+        "nameFilter": "",
+        "onlyAlertsOnDashboard": false,
+        "options": {},
+        "show": "current",
+        "sortOrder": 1,
+        "stateFilter": [],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "Panel Title",
+        "type": "alertlist"
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "$datasource",
+        "fill": 1,
+        "fillGradient": 0,
+        "gridPos": {
+          "h": 7,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "hiddenSeries": false,
+        "id": 4,
+        "legend": {
+          "alignAsTable": false,
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "rightSide": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "dataLinks": []
+        },
+        "percentage": false,
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "repeat": null,
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "(\n  node_memory_MemTotal_bytes{job=\"node-exporter\", instance=\"$instance\"}\n-\n  node_memory_MemFree_bytes{job=\"node-exporter\", instance=\"$instance\"}\n-\n  node_memory_Buffers_bytes{job=\"node-exporter\", instance=\"$instance\"}\n-\n  node_memory_Cached_bytes{job=\"node-exporter\", instance=\"$instance\"}\n)\n",
+            "format": "time_series",
+            "intervalFactor": 2,
+            "legendFormat": "memory used",
+            "refId": "A"
+          },
+          {
+            "expr": "node_memory_Buffers_bytes{job=\"node-exporter\", instance=\"$instance\"}",
+            "format": "time_series",
+            "intervalFactor": 2,
+            "legendFormat": "memory buffers",
+            "refId": "B"
+          },
+          {
+            "expr": "node_memory_Cached_bytes{job=\"node-exporter\", instance=\"$instance\"}",
+            "format": "time_series",
+            "intervalFactor": 2,
+            "legendFormat": "memory cached",
+            "refId": "C"
+          },
+          {
+            "expr": "node_memory_MemFree_bytes{job=\"node-exporter\", instance=\"$instance\"}",
+            "format": "time_series",
+            "intervalFactor": 2,
+            "legendFormat": "memory free",
+            "refId": "D"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "Memory Usage",
+        "tooltip": {
+          "shared": false,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "bytes",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": 0,
+            "show": true
+          },
+          {
+            "format": "bytes",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": 0,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "collapsed": true,
+        "datasource": null,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 14
+        },
+        "id": 15,
+        "panels": [
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 0,
+              "y": 15
+            },
+            "id": 11,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.101:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.101:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.101",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          },
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 6,
+              "y": 15
+            },
+            "id": 41,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.102:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.102:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.102",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          },
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 12,
+              "y": 15
+            },
+            "id": 43,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.103:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.103:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.103",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          },
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 18,
+              "y": 15
+            },
+            "id": 45,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.131:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.131:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.131",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          },
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 0,
+              "y": 22
+            },
+            "id": 47,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.132:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.132:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.132",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          },
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 6,
+              "y": 22
+            },
+            "id": 49,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.133:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.133:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.133",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          },
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 12,
+              "y": 22
+            },
+            "id": 51,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.134:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.134:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.134",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          },
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "description": "Brainstorm-k8s-05",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 18,
+              "y": 22
+            },
+            "id": 53,
+            "interval": null,
+            "links": [
+              {
+                "title": "",
+                "url": ""
+              }
+            ],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.135:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.135:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.135",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          },
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "description": "Brainstorm-k8s-06",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 0,
+              "y": 29
+            },
+            "id": 55,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.136:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.136:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.136",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          },
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "description": "Brainstorm-k8s-07",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 6,
+              "y": 29
+            },
+            "id": 57,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.137:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.137:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.137",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          },
+          {
+            "cacheTimeout": null,
+            "colorBackground": false,
+            "colorValue": false,
+            "colors": [
+              "rgba(50, 172, 45, 0.97)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(245, 54, 54, 0.9)"
+            ],
+            "datasource": "Prometheus",
+            "description": "Brainstorm-k8s-08",
+            "format": "percent",
+            "gauge": {
+              "maxValue": 100,
+              "minValue": 0,
+              "show": true,
+              "thresholdLabels": false,
+              "thresholdMarkers": true
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 6,
+              "x": 12,
+              "y": 29
+            },
+            "id": 59,
+            "interval": null,
+            "links": [],
+            "mappingType": 1,
+            "mappingTypes": [
+              {
+                "name": "value to text",
+                "value": 1
+              },
+              {
+                "name": "range to text",
+                "value": 2
+              }
+            ],
+            "maxDataPoints": 100,
+            "nullPointMode": "connected",
+            "nullText": null,
+            "options": {},
+            "postfix": "",
+            "postfixFontSize": "50%",
+            "prefix": "",
+            "prefixFontSize": "50%",
+            "rangeMaps": [
+              {
+                "from": "null",
+                "text": "N/A",
+                "to": "null"
+              }
+            ],
+            "sparkline": {
+              "fillColor": "rgba(31, 118, 189, 0.18)",
+              "full": false,
+              "lineColor": "rgb(31, 120, 193)",
+              "show": false
+            },
+            "tableColumn": "",
+            "targets": [
+              {
+                "expr": "100 - ((node_filesystem_avail_bytes{instance=\"10.108.14.138:9100\",mountpoint=\"/\",fstype!=\"rootfs\"} * 100) /            node_filesystem_size_bytes{instance=\"10.108.14.138:9100\",mountpoint=\"/\",fstype!=\"rootfs\"})",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "thresholds": "80, 90",
+            "title": "Root Storage Usage — 10.108.14.138",
+            "tooltip": {
+              "shared": false
+            },
+            "type": "singlestat",
+            "valueFontSize": "80%",
+            "valueMaps": [
+              {
+                "op": "=",
+                "text": "N/A",
+                "value": "null"
+              }
+            ],
+            "valueName": "current"
+          }
+        ],
+        "title": "% Storage Capacity by node",
+        "type": "row"
+      },
+      {
+        "collapsed": true,
+        "datasource": null,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 15
+        },
+        "id": 13,
+        "panels": [
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      1450000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "2m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "10.108.14.101 Root Drive has surpassed it's 80% storage capacity limit.",
+              "name": "Root Disk Usage: 10.108.14.101 alert",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: 10.108.14.101",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 0,
+              "y": 16
+            },
+            "hiddenSeries": false,
+            "id": 7,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.101:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.101:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"$instance\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 1450000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- 10.108.14.101",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          },
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      1450000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "1m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "10.108.14.102 Root Drive has surpassed 80% storage  limit.",
+              "name": "Root Disk Usage: 10.108.14.102 Alert",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: 10.108.14.102",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 12,
+              "y": 16
+            },
+            "hiddenSeries": false,
+            "id": 9,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.102:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.102:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.102:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 1450000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- 10.108.14.102",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          },
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      1450000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "1m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "Server 10.108.14.103  has surpassed 80% storage  limit.",
+              "name": "Root Disk Usage: 10.108.14.103",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: 10.108.14.103",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 0,
+              "y": 23
+            },
+            "hiddenSeries": false,
+            "id": 21,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.103:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.103:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.103:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 1450000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- 10.108.14.103",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          },
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      191000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "5m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "10.108.14.131 [Brainstorm-k8s-01] Root Drive has surpassed 80% storage  limit.",
+              "name": "Root Disk Usage 10.108.14.131 Alert",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: Brainstorm-k8s-01",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 12,
+              "y": 23
+            },
+            "hiddenSeries": false,
+            "id": 19,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.131:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.131:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.131:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 191000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- Brainstorm-k8s-01",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          },
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      191000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "5m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "Server 10.108.14.132 [Brainstorm-k8s-02]  has surpassed 80% storage  limit.",
+              "name": "Root Disk Usage: 10.108.14.132 Alert",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: 10.108.14.132",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 0,
+              "y": 30
+            },
+            "hiddenSeries": false,
+            "id": 25,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.132:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.132:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.132:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 191000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- Brainstorm-k8s-02",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          },
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      191000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "5m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "Server 10.108.14.133 [Brainstorm-k8s-03]  has surpassed 80% storage  limit.",
+              "name": "Root Disk Usage: 10.108.14.133 Alert",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: 10.108.14.133",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 12,
+              "y": 30
+            },
+            "hiddenSeries": false,
+            "id": 27,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.133:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.133:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.133:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 191000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- Brainstorm-k8s-03",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          },
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      191000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "1m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "Server 10.108.14.135 [Brainstorm-k8s-05]  has surpassed 80% storage  limit.",
+              "name": "Root Disk Usage: 10.108.14.135 Alert",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: 10.108.14.135",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 0,
+              "y": 37
+            },
+            "hiddenSeries": false,
+            "id": 31,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.135:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.135:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.135:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 191000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- Brainstorm-k8s-05",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          },
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      193000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "1m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "Server 10.108.14.1334[Brainstorm-k8s-04]  has surpassed 80% storage  limit.",
+              "name": "Root Disk Usage: 10.108.14.134 Alert",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: 10.108.14.134",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 12,
+              "y": 37
+            },
+            "hiddenSeries": false,
+            "id": 29,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.134:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.134:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.134:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 193000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- Brainstorm-k8s-04",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          },
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      193000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "5m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "Server 10.108.14.136 [Brainstorm-k8s-06]  has surpassed 80% storage  limit.",
+              "name": "Root Disk Usage: 10.108.14.135 Alert",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: 10.108.14.136",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 0,
+              "y": 44
+            },
+            "hiddenSeries": false,
+            "id": 33,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.136:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.136:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.136:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 193000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- Brainstorm-k8s-06",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          },
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      193000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "5m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "Server 10.108.14.137 [Brainstorm-k8s-07]  has surpassed 80% storage  limit.",
+              "name": "Root Disk Usage: 10.108.14.137 Alert",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: 10.108.14.137",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 12,
+              "y": 44
+            },
+            "hiddenSeries": false,
+            "id": 35,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.137:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.137:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.137:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 193000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- Brainstorm-k8s-07",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          },
+          {
+            "alert": {
+              "alertRuleTags": {},
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      193000000000
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C",
+                      "5m",
+                      "now"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "max"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "for": "1m",
+              "frequency": "10m",
+              "handler": 1,
+              "message": "Server 10.108.14.138 [Brainstorm-k8s-08]  has surpassed 80% storage  limit.",
+              "name": "Root Disk Usage: 10.108.14.138 Alert",
+              "noDataState": "no_data",
+              "notifications": [
+                {
+                  "uid": "iPImMwcMz"
+                }
+              ]
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "description": "Number of bytes used on the Root Drive of node: 10.108.14.138",
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+              "h": 7,
+              "w": 12,
+              "x": 12,
+              "y": 51
+            },
+            "hiddenSeries": false,
+            "id": 37,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+              "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "seriesOverrides": [
+              {
+                "alias": "used",
+                "color": "#E0B400"
+              },
+              {
+                "alias": "available",
+                "color": "#73BF69"
+              }
+            ],
+            "spaceLength": 10,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node-exporter\", instance=\"10.108.14.138:9100\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.138:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 2,
+                "legendFormat": "used",
+                "refId": "C"
+              },
+              {
+                "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node-exporter\", instance=\"10.108.14.138:9100\", fstype!=\"\"}\n  )\n)\n",
+                "format": "time_series",
+                "intervalFactor": 2,
+                "legendFormat": "available",
+                "refId": "B"
+              }
+            ],
+            "thresholds": [
+              {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 193000000000
+              }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Root Disk Usage -- Brainstorm-k8s-08",
+            "tooltip": {
+              "shared": false,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              }
+            ],
+            "yaxis": {
+              "align": false,
+              "alignLevel": null
+            }
+          }
+        ],
+        "title": "Storage Overtime, Alert charts.",
+        "type": "row"
+      }
+    ],
+    "refresh": false,
+    "schemaVersion": 21,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "text": "Prometheus",
+            "value": "Prometheus"
+          },
+          "hide": 0,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "name": "datasource",
+          "options": [],
+          "query": "prometheus",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "type": "datasource"
+        },
+        {
+          "allValue": null,
+          "current": {
+            "text": "10.108.14.101:9100",
+            "value": "10.108.14.101:9100"
+          },
+          "datasource": "$datasource",
+          "definition": "",
+          "hide": 0,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "name": "instance",
+          "options": [],
+          "query": "label_values(node_exporter_build_info{job=\"node-exporter\"}, instance)",
+          "refresh": 2,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "timezone": "",
+   "title": "Storage Alerting",
+    "uid": "fa49a4796d07a042595bv64c87qb338a",
+    "version": 10
+  }
+

@@ -1,0 +1,13 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: local-path-provisioner:psp
+  namespace: {{ local_path_provisioner_namespace }}
+roleRef:
+  kind: Role
+  name: local-path-provisioner:psp
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  namespace: {{ local_path_provisioner_namespace }}
+  name: local-path-provisioner-service-account

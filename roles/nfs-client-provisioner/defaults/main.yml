@@ -1,0 +1,18 @@
+---
+# namespace in which to deploy root
+nfs_client_provisioner_namespace: nfs-client-provisioner
+
+# chart version to deploy
+nfs_client_provisioner_version: 1.0.2
+
+# name of the storageclass created by the chart
+nfs_client_provisioner_storageclass_name: nfs
+
+# Share path on NFS server
+nfs_client_provisioner_path: /extra/nfs_client_provisioner
+
+# NFS server address
+nfs_client_provisioner_server: "{{ hostvars[groups['kube-master'][0]]['ansible_host'] }}"
+
+# Should all data be cleared
+nfs_client_provisioner_clear_data: False

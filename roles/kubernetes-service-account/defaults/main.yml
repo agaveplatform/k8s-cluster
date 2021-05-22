@@ -1,0 +1,20 @@
+---
+# defaults file for kubernetes-service-account
+
+# namespace to which to add the service account
+kubernetes_service_account_namespaces:
+  - develop
+  - qa
+  - staging
+  - production
+
+# Resource limits per service account
+kubernetes_service_account_resource:
+  limit:
+    cpu: '25'
+    memory: 32Gi
+    nvidia.com/gpu: 1
+  default: # Default active cpus requested for a pod if not specified
+    cpu: 100m
+    memory: 128Mi
+    nvidia.com/gpu: 0

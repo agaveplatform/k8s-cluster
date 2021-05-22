@@ -1,0 +1,15 @@
+---
+# cleanup.yml
+# Run this playbook to remove and existing kube-prometheus-stack + loki
+# stack in the cluster. Data will be preserved between deployments
+#
+# Variables:
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playbooks/monitoring/cleanup.yml
+#
+- name: Remove prometheus stack
+  import_playbook: prometheus-cleanup.yml
+
+- name: Remove loki stack
+  import_playbook: loki-cleanup.yml

@@ -1,0 +1,34 @@
+---
+
+# The path on the nfs server to mount
+nfs_persistent_volume_mount_path:
+
+# The hostname/ip of the nfs server to connect
+nfs_persistent_volume_nfs_server:
+
+# the namespace to which the PVC will be bound
+nfs_persistent_volume_namespace: default
+
+# name of the pv and pvc
+nfs_persistent_volume_name: "{{ nfs_persistent_volume_namespace }}-nfs"
+
+# Retail policy for released claims: Retain, Delete
+nfs_persistent_volume_reclaim_policy: Retain
+
+# access mode for the pvc
+nfs_persistent_volume_access_mode: ReadWriteMany
+
+# size of the volume to create
+nfs_persistent_volume_size: 200Gi
+
+# if true, no pvc will be created
+nfs_persistent_volume_skip_pvc: True
+
+# if true, no pvc will be created
+nfs_persistent_volume_readonly: False
+
+# size of the claim to create
+nfs_persistent_volume_claim_size: 5Gi
+
+# access mode for the pvc
+nfs_persistent_volume_claim_access_mode: ReadWriteMany

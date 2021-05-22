@@ -1,0 +1,7 @@
+############################
+# Manila Share
+############################
+# Path to the manila share
+nfs_path: /volumes/_nogroup/d4fe9ea3-a5d2-4c04-8127-79cd33050b67
+# IP address of the manila share server
+nfs_server: 10.255.0.1

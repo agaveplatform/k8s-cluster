@@ -1,0 +1,37 @@
+---
+# defaults file for kubernetes-host
+
+# the list of system packages to install.
+kubernetes_host_packages:
+  - git
+  - gcc
+  - libssl-dev
+  - python-setuptools
+  - python3
+  - python3-setuptools
+  - python3-pip
+  - python3-mysqldb
+  - acct
+  - ntp
+  - dnsutils
+  - iftop
+  - bash-completion
+  - wget
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - oddjob-mkhomedir
+  - jq
+  - gdisk
+
+# The list of python modules to install. Pip will be updated by default
+kubernetes_host_python_modules:
+  - kubernetes==11.0.0
+  - openshift==0.11.0
+  - pyyaml
+  - pyhelm
+  - grpcio
+  - idna
+  - docker
+  - yq

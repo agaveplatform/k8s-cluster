@@ -1,0 +1,83 @@
+---
+# local-storageclasses-cleanup.yml
+# Run this playbook to install and configure cluster storage classes, roles, and access controls.
+#
+# Assumptions:
+# The local-path-provisioner should have already been installed.
+#
+# Varables:
+#
+# Example invocation:
+# ansible-playbook playbooks/storage/local-storageclasses-cleanup.yml
+#
+
+- name: Create cluster baseline storage classes
+  hosts: kube-master[0]
+  become: yes
+
+  tasks:
+    - name: Delete ops storage class
+      import_role:
+        name: local-storageclass
+        tasks_from: cleanup.yml
+      vars:
+        local_storageclass_name: cephfs-ops
+        local_storageclass_clear_stack: True
+      tags:
+        - local
+        - storageclass
+        - ops
+
+    - name: Delete work storage class
+      import_role:
+        name: local-storageclass
+        tasks_from: cleanup.yml
+      vars:
+        local_storageclass_name: "{{project_name}}-fast-work"
+        local_storageclass_clear_stack: True
+      tags:
+        - local
+        - storageclass
+        - ops
+
+    - name: Delete scratch storage class
+      import_role:
+        name: local-storageclass
+        tasks_from: cleanup.yml
+      vars:
+        local_storageclass_name: "{{project_name}}-fast-scratch"
+        local_storageclass_clear_stack: True
+      tags:
+        - local
+        - storageclass
+        - ops
+
+
+- name: Delete service account permission to use the default storage classes
+  hosts: kube-master[0]
+  become: yes
+
+  tasks:
+    - name: "Delete storageclass-reader cluster role to {{project_name}} service accounts in their namespaces"
+      community.kubernetes.k8s:
+        state: absent
+        kind: ClusterRoleBinding
+        api_version: rbac.authorization.k8s.io/v1
+        name: {{project_name}}-storageclass-reader
+      tags:
+        - rbac
+        - rolebinding
+
+    - name: "Delete clusterrole for {{project_name}} local storageclass access"
+      community.kubernetes.k8s:
+        state: absent
+        kind: ClusterRole
+        api_version: rbac.authorization.k8s.io/v1
+        name: {{project_name}}-storageclass-reader
+      tags:
+        - rbac
+        - role
+
+
+
+

@@ -1,0 +1,29 @@
+---
+# Run this playbook to install a custom loki stack in the cluster.
+# Data will be saved to persistent volumes on a pv created via the
+# `kubernetes_loki_promtail_storage_class` storage class.
+#
+# Variables:
+# - `clear_chart`: Clears the chart prior to installing the new chart. Default: false
+# - `storage_class`: The storage class to use to persist data. Default: nfs
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playboks/monitoring/loki.yml
+#
+
+- name: Initialize loki stack
+  hosts: kube-master[0]
+  become: yes
+  gather_facts: false
+
+  vars:
+    clear_chart: false
+    storage_class: nfs
+
+  roles:
+    - role: loki
+      vars:
+        loki_clear_chart: "{{ clear_chart | bool }}"
+        loki_storageclass_name: "{{ storage_class }}"
+      tags:
+        - loki

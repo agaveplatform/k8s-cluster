@@ -1,3 +1,7 @@
-[submodule "kubespray"]
+[submodule "submodules/kubespray"]
 	path = submodules/kubespray
 	url = git@github.com:agaveplatform/kubespray.git
+[submodule "submodules/zonca"]
+	path = submodules/zonca
+	url = https://github.com/zonca/jetstream_kubespray.git
+	branch = branch_v2.15.0

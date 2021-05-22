@@ -1,0 +1,15 @@
+---
+# tasks file for kubernetes-cluster-admin
+
+- name: Assign cluster-admin cluster role binding to all provided service accounts
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'cluster-admin-crb.yml.j2') }}"
+  loop: "{{ kubernetes_cluster_admin_service_accounts }}"
+  loop_control:
+    loop_var: service_account_name
+
+- name: Assign cluster-admin cluster role binding to user groups
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'ldap-admin-crb.yml.j2') }}"

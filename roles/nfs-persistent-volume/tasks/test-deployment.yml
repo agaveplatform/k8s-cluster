@@ -1,0 +1,22 @@
+---
+# tests a deployment of the nfs persistent volume
+# by launching a deployment across all multiple hosts
+# and verifying the volume is mounted.
+
+- debug:
+    msg: "{{ lookup('template', 'test-deployment.yml.j2') }}"
+
+- name: Create deployment with distributed pv
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'test-deployment.yml.j2') }}"
+  when:
+  - teardown is not defined or teardown|bool == false
+
+- name: Delete deployment with distributed pv
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', 'test-deployment.yml.j2') }}"
+  when:
+  - teardown is defined
+  - teardown|bool

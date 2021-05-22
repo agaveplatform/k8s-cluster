@@ -1,0 +1,22 @@
+# Clears the chart and custom resource definitions prior to
+# installing the new chart.
+loki_clear_chart: false
+
+# version of the loki chart to deploy
+loki_version: 2.5.0
+
+# version of the promtail chart to deploy
+promtail_version: 3.0.4
+
+# true if a persistent volume should be created to save data. If false, data will be lose upon restart.
+loki_storage_enabled: true
+
+# k8s storage class to use when provisioning persistent storage
+loki_storage_class: nfs
+
+# k8s storage class to use when provisioning persistent storage
+loki_pvc_size: 10Gi
+
+# namespace in which to deploy the charts
+loki_namespace: monitoring
+

@@ -1,0 +1,55 @@
+---
+# add-disk.yml
+# Run this playbook to add a new device to a host and format with xfs.
+#
+# Assumptions:
+# Device should be present, unused, and unformatted
+#
+# Varables:
+# `host`: The host to which to mount the disk
+# `mount_path`: the path to which the new device should be mounted on the host. Default: /data
+# `device_path`: the path to the device that should be mounted. Ex. /dev/sdf
+#
+# Example invocation:
+#
+# Start the server on one host:
+# ansible -b -m shell -a "iperf -s" brainstorm-k8s-05
+#
+# Then run the clients against a named host:
+#
+# ansible-playbook -i inventory playbooks/host/add-disk.yml \
+#    -e target_host=agave-k8s-01 \
+#    -e mount_path=/extra \
+#    -e device_path=/dev/sdb
+#
+
+- hosts: k8s-cluster
+  gather_facts: yes
+  become: yes
+
+  vars_prompt:
+    - name: device_path
+      prompt: "Enter device to format and mount"
+      private: no
+      default: /dev/sdb
+    - name: mount_path
+      prompt: "Enter path to mount the device"
+      private: no
+      default: /extra
+
+
+  roles:
+    - role: ansible-disk
+      disk_additional_disks:
+        - disk: "{{ device_path }}"
+          fstype: ext4
+          mount_options: defaults
+          mount: "{{ mount_path }}"
+          user: root
+          group: root
+          disable_periodic_fsck: false
+      additional_fs_utils:
+        - xfsprogs
+      tags:
+      - disk
+

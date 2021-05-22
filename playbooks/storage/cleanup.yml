@@ -1,0 +1,17 @@
+---
+# cleanup.yml
+# Run this playbook to remove monitoring from the cluter
+#
+# Variables:
+# `clear_data`: if true, all persistent volume and promtail's position file
+#      are removed. This fully resets the log data. Default: false
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playbooks/monitoring/cleanup.plbk
+#
+
+- name: Remove Minio
+  import_playbook: local-path-provisioner-cleanup.yml
+
+- name: Remove Rook
+  import_playbook: rook-cleanup.yml

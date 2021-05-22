@@ -1,0 +1,15 @@
+---
+# sets quotas for the user in a given namespace
+- name: "Create compute resource quota for the given namespace"
+  community.kubernetes.k8s:
+    state: present
+    force: yes
+    definition: "{{ lookup('template', 'compute-rq.yml.j2') }}"
+    namespace: "{{ kubernetes_service_account_namespace }}"
+
+- name: "Create default compute resource requests for the given namespace"
+  community.kubernetes.k8s:
+    state: present
+    force: yes
+    definition: "{{ lookup('template', 'compute-lr.yml.j2') }}"
+    namespace: "{{ kubernetes_service_account_namespace }}"

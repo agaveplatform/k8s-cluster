@@ -1,0 +1,96 @@
+---
+# tasks file for kubernetes-prometheus monitoring
+- name: Clear previous deployment
+  include_tasks: cleanup.yml
+  when:
+    - prometheus_operator_clear_chart|bool
+
+- name: Ensure namespace is present
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'namespace.yml.j2') }}"
+
+- name: Create configmaps for the custom Grafana dashboards
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) }}"
+  loop:
+    - dashboards/blackbox-exporter.yml.j2
+    - dashboards/kubedb-mongodb-monitor.yml.j2
+    - dashboards/cluster-overview.yml.j2
+    - dashboards/mongodb-overview.yml.j2
+    - dashboards/alertmanager.yml.j2
+  tags:
+    - add_chart
+
+- name: Read etcd ca file
+  shell: cat /etc/ssl/etcd/ssl/ca.pem
+  register: etcd_ca
+
+- name: Read etcd ca file
+  shell: cat /etc/ssl/etcd/ssl/node-{{ inventory_hostname }}.pem
+  register: etcd_client_cert
+
+- name: Read etcd ca file
+  shell: cat /etc/ssl/etcd/ssl/node-{{ inventory_hostname }}-key.pem
+  register: etcd_client_key
+
+- name: Create secret with etcd certs and ca needed by prometheus to scrape metrics
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', 'etcd-client-cert-secret.yaml.j2') }}"
+  tags:
+    - add_chart
+
+- name: Ensure prometheus-community helm repo is present
+  community.kubernetes.helm_repository:
+    name: prometheus-community
+    repo_url: "https://prometheus-community.github.io/helm-charts"
+    repo_state: present
+
+- name: "Install kube-prometheus-stack"
+  community.kubernetes.helm:
+    name: prometheus
+    chart_ref: prometheus-community/kube-prometheus-stack
+    update_repo_cache: true
+    release_namespace: "{{ prometheus_operator_namespace }}"
+    create_namespace: true
+    release_values: "{{ lookup('template', 'kube-prometheus-values.yml.j2') | from_yaml }}"
+    chart_version: "{{ prometheus_operator_version }}"
+    release_state: present
+
+- name: Ensure ckotzbauer helm repo is present
+  community.kubernetes.helm_repository:
+    name: ckotzbauer
+    repo_url: "https://ckotzbauer.github.io/helm-charts"
+    repo_state: present
+
+- name: "Install prometheus blackbox exporter for static monitoring"
+  community.kubernetes.helm:
+    name: prometheus-blackbox-exporter
+    chart_ref: ckotzbauer/prometheus-blackbox-exporter
+    update_repo_cache: true
+    release_namespace: "{{ prometheus_operator_namespace }}"
+    create_namespace: true
+    release_values: "{{ lookup('template', 'blackbox-exporter-values.yml.j2') | from_yaml }}"
+    chart_version: "{{ prometheus_operator_prometheus_blackbox_version }}"
+    release_state: present
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

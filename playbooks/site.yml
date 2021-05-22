@@ -1,0 +1,27 @@
+---
+# Run this playbook to lay down the basic cluster config of cert management service accounts, logging, monitoring,
+# storage, and db orchestration.
+#
+# Variables:
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playboks/sites.yml
+#
+- name: Install cert manager for tls automation
+  import_playbook: certs/main.yml
+
+- name: Add devops namespaces and service accounts
+  import_playbook: iam/main.yml
+
+- name: Add default storage providers and classes
+  import_playbook: storage/main.yml
+
+- name: Apply cluster logging and monitoring configs
+  import_playbook: monitoring/main.yml
+
+- name: Install KubeDB database service provider
+  import_playbook: database/main.yml
+
+
+
+

@@ -1,0 +1,41 @@
+---
+# main.yml
+# Run this playbook to install packages and baseline configurations for all hosts.
+#
+# Varables:
+# - clean_host: should the host be cleaned and deployed from scratch
+#
+# Example invocation:
+# ansible-playbook playbooks/host/main.yml
+#
+- name: Check for python install
+  hosts: all
+  gather_facts: False
+  become: yes
+
+  pre_tasks:
+    - name: Install python for Ansible
+      raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
+      changed_when: False
+      become: yes
+
+- name: Applying baseline configuration to host
+  hosts: all
+  become: yes
+
+  roles:
+    - role: agave-host
+      create_devops_linux_user: yes
+      tags:
+        - host
+        - common
+        - baseline
+
+    - role: kubernetes-host
+      tags:
+        - host
+        - pip
+        - common
+
+- name: Configure host for manilla share access
+  import_playbook: manilla.yml

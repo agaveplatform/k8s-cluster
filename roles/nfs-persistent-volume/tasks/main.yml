@@ -1,0 +1,37 @@
+---
+- assert:
+    msg: Checking nsf server ip
+    that:
+      - nfs_persistent_volume_nfs_server is defined
+      - nfs_persistent_volume_nfs_server != ''
+
+- debug:
+    msg: "Creating pv for {{ nfs_persistent_volume_name }}"
+
+- name: Ensure namespace is present
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'namespace.yml.j2') }}"
+  when:
+    - nfs_persistent_volume_namespace != ''
+
+- name: Create persistent volume
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'nfs-pv.yml.j2') }}"
+
+
+- name: Create storage class claim
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'nfs-sc.yml.j2') }}"
+  when:
+    - nfs_persistent_volume_add_storage_class|bool
+
+
+- name: Create persistent volume claim
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'nfs-pvc.yml.j2') }}"
+  when:
+    - nfs_persistent_volume_skip_pvc|bool == false

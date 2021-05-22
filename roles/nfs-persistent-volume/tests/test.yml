@@ -1,0 +1,11 @@
+---
+- hosts: kube-master[0]
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - include_role:k
+        name: nfs-persistent-volume
+        tasks_from: test-deployment.yml
+      vars:
+        nfs_persistent_volume_namespace: ansible-test

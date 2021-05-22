@@ -1,0 +1,63 @@
+---
+
+- name: Install common packages
+  apt:
+    state: present
+    update_cache: yes
+    pkg: "{{ kubernetes_host_packages }}"
+  loop:
+
+- name: Ensure services enabled
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+      - acct
+      - ntp
+
+- name: Update pip
+  shell: pip3 install -U pip
+
+- name: Adding openshift python library for kube module support in ansible
+  pip:
+   state: present
+   name: "{{ kubernetes_host_python_modules }}"
+
+- name: Remove autoinstalled packages
+  apt:
+    autoremove: yes
+    update_cache: yes
+  tags:
+    - bootstrap-os
+
+
+# configure nprocs for all users
+
+- name: Add kubectl alias
+  lineinfile:
+    state: present
+    create: true
+    path: /root/.bashrc
+    line: "alias k='kubectl '"
+
+- name: Add etcd client env
+  lineinfile:
+    state: present
+    create: true
+    path: /root/.bashrc
+    line: "source /etc/etcd.env"
+
+- name: Add kubectl alias
+  lineinfile:
+    state: present
+    create: true
+    path: /root/.bashrc
+    line: "alias ketcdctl='etcdctl --endpoints=$ETCD_LISTEN_CLIENT_URLS --cert=$ETCD_CERT_FILE --cacert=$ETCD_TRUSTED_CA_FILE --key=$ETCD_KEY_FILE'"
+
+- name: Disable huge page support for redis
+  shell: |
+    echo "never" > {{ item }}
+  loop:
+    - /sys/kernel/mm/transparent_hugepage/enabled
+    - /sys/kernel/mm/transparent_hugepage/defrag

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ nfs_persistent_volume_name }}-pv
+  labels:
+    source: cluster-nfs
+    target: {{ nfs_persistent_volume_name }}
+spec:
+{% if nfs_persistent_volume_add_storage_class|bool %}
+  storageClassName: {{ nfs_persistent_volume_name }}-nfs
+{% endif %}
+  capacity:
+    storage: {{ nfs_persistent_volume_size }}
+  volumeMode: Filesystem
+  accessModes:
+    - {{ nfs_persistent_volume_access_mode }}
+  persistentVolumeReclaimPolicy: {{ nfs_persistent_volume_reclaim_policy }}
+  mountOptions:
+    - auto
+    - nofail
+    - noatime
+    - nolock
+    - intr
+    - actimeo=1800
+  nfs:
+    path: {{ nfs_persistent_volume_mount_path }}
+    server: {{ nfs_persistent_volume_nfs_server }}
+    readOnly: {{ nfs_persistent_volume_readonly|bool }}

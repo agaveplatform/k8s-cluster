@@ -1,0 +1,56 @@
+- name: "Remove KubeDB Community Helm Chart"
+  community.kubernetes.helm:
+    name: kubedb-community
+    chart_ref: appscode/kubedb
+    release_namespace: kube-system
+    release_state: absent
+    wait: true
+  ignore_errors: true
+
+- name: "Remove KubeDB Catalog"
+  community.kubernetes.helm:
+    name: kubedb-catalog
+    chart_ref: appscode/kubedb-catalog
+    release_namespace: kube-system
+    release_state: absent
+    wait: true
+  ignore_errors: true
+
+
+- name: Remove catalog CRD
+  community.kubernetes.k8s:
+    state: absent
+    api_version: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: "{{ item }}"
+  loop:
+    - elasticsearchversions.catalog.kubedb.com
+    - etcdversions.catalog.kubedb.com
+    - memcachedversions.catalog.kubedb.com
+    - mongodbversions.catalog.kubedb.com
+    - mysqlversions.catalog.kubedb.com
+    - perconaxtradbversions.catalog.kubedb.com
+    - pgbouncerversions.catalog.kubedb.com
+    - postgresversions.catalog.kubedb.com
+    - proxysqlversions.catalog.kubedb.com
+    - redisversions.catalog.kubedb.com
+  ignore_errors: true
+
+- name: Remove DB Type CRD
+  community.kubernetes.k8s:
+    state: absent
+    api_version: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: "{{ item }}"
+  loop:
+    - elasticsearches.kubedb.com
+    - etcds.kubedb.com
+    - memcacheds.kubedb.com
+    - mongodbs.kubedb.com
+    - mysqls.kubedb.com
+    - perconaxtradbs.kubedb.com
+    - pgbouncers.kubedb.com
+    - postgreses.kubedb.com
+    - proxysqls.kubedb.com
+    - redises.kubedb.com
+  ignore_errors: true

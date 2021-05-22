@@ -1,0 +1,27 @@
+---
+- name: Clean up existing install
+  include_tasks: cleanup.yml
+  when:
+    - cert_manager_clear_stack|bool
+
+- name: Ensure jetstack helm repo is present
+  community.kubernetes.helm_repository:
+    name: jetstack
+    repo_url: https://charts.jetstack.io
+
+- name: "Install cert-manager chart"
+  community.kubernetes.helm:
+    name: cert-manager
+    chart_ref: jetstack/cert-manager
+    update_repo_cache: true
+    release_namespace: "{{ cert_manager_namespace }}"
+    create_namespace: true
+    release_values: "{{ lookup('template', 'custom-values.yml.j2') | from_yaml }}"
+    release_state: present
+
+- name: Install Issuers
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup('template', item) }}"
+  loop:
+    - self-signed-issuer.yml.j2

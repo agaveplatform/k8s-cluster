@@ -1,0 +1,19 @@
+---
+
+- name: Delete manifests
+  community.kubernetes.k8s:
+    state: absent
+    definition: "{{ lookup('template', item) }}"
+  loop:
+    - namespace.yml.j2
+    - psp.yml.j2
+    - serviceaccount.yml.j2
+    - role-psp.yml.j2
+    - rolebinding-psp.yml.j2
+    - clusterrole.yml.j2
+    - clusterrolebinding.yml.j2
+    - configmap.yml.j2
+    - deployment.yml.j2
+  ignore_errors: true
+
+

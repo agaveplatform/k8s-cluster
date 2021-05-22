@@ -1,0 +1,33 @@
+---
+# main.yml
+# Run this playbook to install and configure something. 
+#
+# Assumptions:
+# - Existing kubernetes cluster to which the target user has admin access
+#
+# Varables:
+#
+# Example invocation:
+# ansible-playbook playbooks/policy/main.yml
+#
+
+- name: Assigning default admin permissions to the cluster
+  hosts: kube-master[0]
+  become: yes
+  gather_facts: no
+
+  roles:
+    - name: Grant default admin cluster admin role
+      role: kubernetes-cluster-admin
+      tags:
+        - admin
+        - rbac
+
+    - name: Grant default service accounts and namespaces
+      role: kubernetes-service-account
+      vars:
+        kubernetes_service_account_namespaces: "{{ devops_namespaces }}"
+      tags:
+        - admin
+        - serviceaccount
+

@@ -1,0 +1,17 @@
+---
+# main.yml
+# Run this playbook to install custom Prometheus and Loki stacks in the cluster.
+# Data will be saved to persistent volumes on a cluster-wide nfs server.
+#
+# Variables:
+# - clear_chart: Clears the chart and custom resource
+#      definitions prior to installing the new chart. Default: false
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playbooks/monitoring/main.yml
+#
+- name: Configure metric collection
+  import_playbook: prometheus.yml
+
+- name: Configure log collection
+  import_playbook: loki.yml

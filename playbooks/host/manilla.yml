@@ -1,0 +1,49 @@
+---
+# manilla.yml
+# Run this playbook to configure the manilla interface on each cluster node so it can access the nfs share in
+# openstack on jetstream.
+#
+# Assumptions:
+# The share should already be created and access granted to the hosts. Interfaces should have been added via the
+# UI or command line
+#
+# Varables:
+#
+# Example invocation:
+# ansible-playbook playbooks/host/manilla.yml
+#
+
+- name: Create nfs client provisioner and storage class
+  hosts: k8s-cluster
+  become: yes
+
+  tasks:
+    - name: Add nfs client tools
+      apt:
+        name: nfs-common
+        state: present
+
+    - name: Add manilla network interface to VM
+      copy:
+        dest: /etc/netplan/99-manilla.yaml
+        mode: 0640
+        owner: root
+        content: |-
+          network:
+          version: 2
+          ethernets:
+            ens7:
+              dhcp4: true
+
+    - name: Bring up the interface
+      shell: ip link set ens7 up
+
+    - name: Tell the host to fetch the ip address for its new interface
+      shell: dhclient ens7
+
+    - name: Query the new interface info
+      shell: ip addr show ens7
+      register: ip_result
+
+    - debug:
+        msg: "{{ ip_result.stdout }}"

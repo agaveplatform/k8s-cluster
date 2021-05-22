@@ -1,0 +1,58 @@
+---
+- name: Remove existing KubeDB install
+  include_tasks: cleanup.yml
+  when:
+    - clear_chart|bool == True
+
+- name: Copy kubernetes cluster ca cert for use in calls to apiserver
+  shell: cat /etc/kubernetes/ssl/ca.crt
+  register: ca_certificate_response
+
+- import_tasks: kubedb-license.yml
+  when:
+    - kubedb_community_license_cert is not defined or (kubedb_community_license_cert|trim) == ''
+
+- name: Ensure KubeDB Helm repo is present
+  block:
+  - name: Add appscode helm repo
+    community.kubernetes.helm_repository:
+      name: appscode
+      repo_url: "https://charts.appscode.com/stable/"
+      state: present
+
+  - name: "Install KubeDB Community Helm Chart"
+    community.kubernetes.helm:
+      name: kubedb-community
+      chart_ref: appscode/kubedb
+      chart_version: "{{ kubedb_community_chart_version }}"
+      update_repo_cache: true
+      release_namespace: kube-system
+      create_namespace: false
+      release_state: present
+      wait: true
+      release_values:
+        license: |-
+          {{ kubedb_community_license_cert }}
+        apiserver:
+          ca: |-
+             {{ ca_certificate_response.stdout | indent(width=4, indentfirst=False) }}
+
+  - name: "Install KubeDB Catalog"
+    community.kubernetes.helm:
+      name: kubedb-catalog
+      chart_ref: appscode/kubedb-catalog
+      chart_version: "{{ kubedb_catalog_chart_version }}"
+      update_repo_cache: true
+      release_namespace: kube-system
+      create_namespace: false
+      release_state: present
+      wait: true
+      release_values:
+        catalog:
+          pgbouncer: false
+          proxysql: false
+          perconaxtradb: false
+          elasticsearch: false
+
+#- name: Install KubeDB CLI
+#  include_tasks: cli.yml

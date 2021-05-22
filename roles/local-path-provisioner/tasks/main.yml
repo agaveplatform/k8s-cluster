@@ -1,0 +1,26 @@
+---
+- name: Clear previous deployment
+  include_tasks: cleanup.yml
+  when:
+    - local_path_provisioner_clear_data|bool == True
+
+- name: Ensure local directory path for volume data is present
+  file:
+    state: directory
+    path: "{{ local_path_provisioner_path }}"
+    mode: 0777
+
+- name: Apply charts
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ lookup( 'template', item) }}"
+  loop:
+    - namespace.yml.j2
+    - psp.yml.j2
+    - serviceaccount.yml.j2
+    - role-psp.yml.j2
+    - rolebinding-psp.yml.j2
+    - clusterrole.yml.j2
+    - clusterrolebinding.yml.j2
+    - configmap.yml.j2
+    - deployment.yml.j2

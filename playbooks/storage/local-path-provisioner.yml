@@ -1,0 +1,22 @@
+---
+# local-path-provisioner.yml
+# Run this playbook to install and configure the local path provisioner to the host.
+#
+# Assumptions:
+#
+# Varables:
+#
+# Example invocation:
+# ansible-playbook playbooks/storage/local-path-provisioner.yml
+#
+- name: Set up local-path-provisioner CSI plugin
+  hosts: kube-master[0]
+  become: yes
+
+  tasks:
+    - name: Create local-path-provisioner resources
+      import_role:
+        name: local-path-provisioner
+      tags:
+        - local
+        - storage

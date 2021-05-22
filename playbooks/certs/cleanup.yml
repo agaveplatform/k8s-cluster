@@ -1,0 +1,37 @@
+---
+# cleanup.yml
+# Run this playbook to remove cert-manager, cluster issuers, and crd from
+# the cluster.
+#
+# Variables:
+#
+# Example invocation:
+# $ ansible-playbook playbooks/certs/cleanup.plbk
+#
+
+- name: Remove cert-manager and existing issuers from cluster
+  hosts: kube-master[0]
+  become: yes
+  gather_facts: no
+
+  tasks:
+
+    - name: Remove existing issuers
+      import_role:
+        name: cert-manager-issuers
+        tasks_from: cleanup.yml
+      vars:
+        cert_manager_issuers_clear_stack: True
+      tags:
+        - cert
+        - issuers
+
+    - name: Remove cert-manager and crd
+      import_role:
+        name: cert-manager
+        tasks_from: cleanup.yml
+      vars:
+        cert_manager_clear_stack: True
+      tags:
+        - cert
+        - issuers

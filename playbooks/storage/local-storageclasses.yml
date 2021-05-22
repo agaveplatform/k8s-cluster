@@ -1,0 +1,82 @@
+---
+# local-storageclasses.yml
+# Run this playbook to install and configure cluster storageclasses.
+# persistent volumes, storage classes, and access controls.
+#
+# Assumptions:
+# The local-path-provisioner should have already been installed.
+#
+# Varables:
+# clear_stack: to clear the storageclasses before recreating them
+#
+# Example invocation:
+# ansible-playbook playbooks/storage/local-storageclasses.yml
+#
+
+- name: Create cluster baseline storage classes
+  hosts: kube-master[0]
+  become: yes
+
+  vars:
+    clear_stack: False
+
+  roles:
+    - name: Create a persistent operations ceph storageclass
+      role: local-storageclass
+      local_storageclass_reclaim_policy: Retain
+      local_storageclass_clear_stack: "{{ clear_stack|bool }}"
+      tags:
+        - local
+        - storageclass
+
+- name: Grant service account permission to use the default storage classes
+  hosts: kube-master[0]
+  become: yes
+
+  tasks:
+
+    - name: "Create clusterrole for {{project_name}} local storageclass access"
+      community.kubernetes.k8s:
+        state: present
+        definition: |-
+          kind: ClusterRole
+          apiVersion: rbac.authorization.k8s.io/v1
+          metadata:
+            name: {{project_name}}-storageclass-reader
+          rules:
+          - apiGroups:
+            - storage.k8s.io
+            resources:
+            - storageclasses
+            verbs:
+            - get
+            - list
+            - watch
+      tags:
+        - rbac
+        - role
+
+    - name: "Grant storageclass-reader cluster role to {{project_name}} service accounts in their namespaces"
+      community.kubernetes.k8s:
+        state: present
+        definition: |-
+          kind: ClusterRoleBinding
+          apiVersion: rbac.authorization.k8s.io/v1
+          metadata:
+            name: {{project_name}}-storageclass-reader
+          subjects:
+          {% for sa in devops_namespaces %}
+          - kind: ServiceAccount
+            namespace: support
+            name: {{ sa }}
+          {% endfor %}
+          roleRef:
+            kind: ClusterRole
+            name: {{project_name}}-storageclass-reader
+            apiGroup: rbac.authorization.k8s.io
+      tags:
+        - rbac
+        - rolebinding
+
+
+

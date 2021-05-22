@@ -1,0 +1,6 @@
+---
+# name of the storageclass
+local_storageclass_name: local-hdd
+
+# True if storageclass should be removoed first
+local_storageclass_clear_stack: False

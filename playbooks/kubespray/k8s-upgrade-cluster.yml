@@ -1,0 +1,17 @@
+---
+# k8s-cluster.yml
+# Run this playbook to deploy and configure a new cluster from scratch.
+#
+# Assumptions:
+# Ubuntu 20.04 LTS is assumed
+#
+# Varables:
+#
+# Example invocation:
+#
+# ansible-playbook -i inventory/hosts.yml playbooks/k8s-upgrade-cluster.yml
+#
+
+- name: Upgrade cluster
+  become: yes
+  import_playbook: ../../submodules/zonca/upgrade-cluster.yml

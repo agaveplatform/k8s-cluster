@@ -1,0 +1,35 @@
+---
+- name: Clear previous deployment
+  include_tasks: cleanup.yml
+  when:
+    - nfs_client_provisioner_clear_data|bool == True
+
+- name: Ensure  helm repo is present
+  community.kubernetes.helm_repository:
+    name: ckotzbauer
+    repo_url: "https://ckotzbauer.github.io/helm-charts"
+    repo_state: present
+
+- name: "Install nfs-client-provisioner to access nfs repos"
+  community.kubernetes.helm:
+    name: nfs-client-provisioner
+    chart_ref: ckotzbauer/nfs-client-provisioner
+    update_repo_cache: true
+    release_state: present
+    release_namespace: "{{ nfs_client_provisioner_namespace }}"
+    create_namespace: true
+    chart_version: "{{ nfs_client_provisioner_version }}"
+    release_values:
+      storageClass:
+        name: "{{ nfs_client_provisioner_storageclass_name }}"
+        accessModes: ReadWriteMany
+      nfs:
+        server: "{{ nfs_client_provisioner_server }}"
+        path: "{{ nfs_client_provisioner_path }}"
+        mountOptions:
+          - "nfsvers=3"
+      rbac:
+        create: true
+      podSecurityPolicy:
+        enabled: true
+

@@ -1,0 +1,23 @@
+---
+# Fetches a license for kubedb from the server
+- name: Get the cluster UID (uid of kube-system namespace)
+  shell: kubectl get ns kube-system -o=jsonpath='{.metadata.uid}'
+  register: cluster_uid
+
+- name: Pull new license from the appscode license server
+  uri:
+    url: https://license-issuer.appscode.com/issue-license
+    method: POST
+    body_format: form-urlencoded
+    body:
+      name: "{{ kubedb_community_licensee_name }}"
+      email: "{{ kubedb_community_license_email }}"
+      product: "kubedb-community"
+      cluster: "{{ cluster_uid.stdout }}"
+      tos: "true"
+      token: "{{ kubedb_community_license_key }}"
+    status_code: [200, 202]
+  register: kubedb_community_license_response
+
+- set_fact:
+    kubedb_community_license_cert: "{{ kubedb_community_license_response.stdout }}"

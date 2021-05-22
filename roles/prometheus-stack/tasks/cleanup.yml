@@ -1,0 +1,47 @@
+---
+# Cleans out a previous deployment along with custom resource types
+- name: Delete current prometheus operator chart
+  community.kubernetes.helm:
+    release_namespace: "{{ prometheus_operator_namespace }}"
+    release_state: absent
+    name: prometheus
+  ignore_errors: yes
+
+
+#- name: Delete prometheus custom resources
+#  shell: kubectl delete crd {{ item }}
+#  loop:
+#    - alertmanagerconfigs.monitoring.coreos.com
+#    - alertmanagers.monitoring.coreos.com
+#    - podmonitors.monitoring.coreos.com
+#    - probes.monitoring.coreos.com
+#    - prometheuses.monitoring.coreos.com
+#    - prometheusrules.monitoring.coreos.com
+#    - servicemonitors.monitoring.coreos.com
+#    - thanosrulers.monitoring.coreos.com
+#  ignore_errors: yes
+
+- name: Remove etcd secret
+  community.kubernetes.k8s:
+    state: absent
+    definition:
+      kind: Secret
+      apiVersion: v1
+      metadata:
+        name: etcd-client-cert
+        namespace: "{{ prometheus_operator_namespace }}"
+
+- name: Delete current prometheus blackbox exporter chart
+  community.kubernetes.helm:
+    release_namespace: "{{ prometheus_operator_namespace }}"
+    release_state: absent
+    name: prometheus-blackbox-exporter
+  ignore_errors: yes
+
+- name: Delete prometheus blackbox exporter psp and rbac
+  community.kubernetes.k8s:
+    state: absent
+    definition: "{{ lookup('template', 'prometheus-blackbox-exporter-psp.yml.j2') }}"
+  when:
+    - prometheus_operator_clear_chart|bool
+

@@ -1,0 +1,17 @@
+---
+# k8s-cluster.yml
+# Run this playbook to deploy and configure a new cluster from scratch.
+#
+# Assumptions:
+# Ubuntu 20.04 LTS is assumed
+#
+# Varables:
+#
+# Example invocation:
+#
+# ansible-playbook playbooks/kubespray/k8s-scale.yml -b
+#
+
+- name: Spray cluster
+  become: yes
+  import_playbook: ../../submodules/zonca/scale.yml

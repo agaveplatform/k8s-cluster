@@ -1,0 +1,49 @@
+
+---
+- name: List interface facts
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Read netplan config file
+      shell: cat /etc/netplan/50-cloud-init.yaml
+      register: cat_netplan_config
+      tags:
+        - netplan
+
+    - name: Define the new nameserver config
+      set_fact:
+        nameserver_config: |
+          network:
+            ethernets:
+              {{ ansible_default_ipv4['interface'] }}:
+                nameservers:
+                  addresses: {{ nameservers | to_json }}
+
+    - name: Merge the new nameserver config with the existing config
+      set_fact:
+        updated_netplan_config: "{{  cat_netplan_config.stdout | from_yaml | combine( (lookup('vars', 'nameserver_config') | from_yaml), recursive=True ) | to_nice_yaml(indent=4) }}"
+
+    - name: Copy updated netplan config to host
+      copy:
+        content: "{{ updated_netplan_config }}"
+        dest: /etc/netplan/50-cloud-init.yaml
+        backup: yes
+      register: copy_updated_netplan_config
+      tags:
+        - netplan
+
+    - name: Apply updated config to netplan
+      shell: netplan apply
+      register: netplay_apply_result
+      ignore_errors: yes
+
+    - name: Revert updated netplan config to the previous version
+      shell: mv {{ copy_updated_netplan_config.backup_file }} /etc/netplan/50-cloud-init.yaml
+      when:
+        - netplay_apply_result.failed
+
+  - name: find interface facts
+    debug:
+      msg: "{{ hostvars[inventory_hostname]['ansible_%s' | format(item)] }}"
+    with_items: "{{ ansible_interfaces }}"

@@ -1,0 +1,18 @@
+---
+# main.yml
+# Run this playbook to add storage to the cluster.
+#
+# Variables:
+#
+# Example invocation:
+# $ ansible-playbook -i inventory/hosts playbooks/storage/main.yml
+#
+
+- name: Add local provisioner
+  import_playbook: local-path-provisioner.yml
+
+- name: Add local storageclasses
+  import_playbook: local-storageclasses.yml
+
+- name: Add nfs client provisioner and storageclass
+  import_playbook: nfs-client-provisioner.yml

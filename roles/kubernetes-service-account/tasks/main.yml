@@ -1,0 +1,7 @@
+---
+# tasks file for kubernetes-service-users
+- name: "Create new service account for the user"
+  include_tasks: serviceaccount.yml
+  loop: "{{ kubernetes_service_account_namespaces }}"
+  loop_control:
+    loop_var: kubernetes_service_account_namespace

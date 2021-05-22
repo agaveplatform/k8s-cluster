@@ -1,0 +1,3 @@
+  collections:
+    - community.kubernetes.helm
+    - community.kubernetes.k8s
