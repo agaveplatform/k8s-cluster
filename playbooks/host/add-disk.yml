@@ -12,12 +12,10 @@
 #
 # Example invocation:
 #
-# Start the server on one host:
-# ansible -b -m shell -a "iperf -s" brainstorm-k8s-05
 #
 # Then run the clients against a named host:
 #
-# ansible-playbook -i inventory playbooks/host/add-disk.yml \
+# ansible-playbook playbooks/host/add-disk.yml \
 #    -e target_host=agave-k8s-01 \
 #    -e mount_path=/extra \
 #    -e device_path=/dev/sdb
