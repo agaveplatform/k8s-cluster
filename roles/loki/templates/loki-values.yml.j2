@@ -53,7 +53,7 @@ livenessProbe:
 persistence:
   enabled: {{ loki_storage_enabled }}
   size: {{ loki_pvc_size }}
-  storageClassName: {{ loki_storage_class }}
+  storageClassName: {{ loki_storageclass_name }}
   accessModes:
     - ReadWriteOnce
 
