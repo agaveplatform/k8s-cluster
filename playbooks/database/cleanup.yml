@@ -23,10 +23,6 @@
         tasks_from: cleanup.yml
       vars:
         kubedb_clear_chart: True
-      tags:
-        - loki
-        - promtail
-        - operator
 
 
 

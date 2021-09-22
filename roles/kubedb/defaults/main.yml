@@ -14,10 +14,10 @@ kubedb_community_license_email:
 kubedb_community_license_cert:
 
 # version of kubedb helm chart to install
-kubedb_community_chart_version: v0.16.2
+kubedb_community_chart_version: v2021.06.23
 
 # version of kubedb catalog helm chart to use
-kubedb_catalog_chart_version: v0.16.2
+kubedb_catalog_chart_version: v2021.06.23
 
 # download link for the cli. defaults to project github release link for the given kubedb version
 kubedb_cli_download_link: "https://github.com/kubedb/cli/releases/download/{{ kubedb_catalog_version}}/kubedb-linux-amd64"

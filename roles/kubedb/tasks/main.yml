@@ -54,5 +54,5 @@
           perconaxtradb: false
           elasticsearch: false
 
-#- name: Install KubeDB CLI
-#  include_tasks: cli.yml
+- name: Install KubeDB CLI
+  include_tasks: cli.yml

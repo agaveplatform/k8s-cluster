@@ -19,9 +19,6 @@
 - name: Apply cluster logging and monitoring configs
   import_playbook: monitoring/main.yml
 
-- name: Install KubeDB database service provider
-  import_playbook: database/main.yml
-
 
 
 

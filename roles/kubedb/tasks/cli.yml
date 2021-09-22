@@ -1,10 +1,4 @@
 ---
-- name: Install krew
-  import_role:
-    name: ansible-role-kubectl-krew
-  vars:
-    krew_plugins: []
-
 - name: Upgrade krew
   shell: kubectl krew upgrade
 
