@@ -22,6 +22,7 @@
         - cert
 
     - role: cert-manager-issuers
+      cert_manager_issuers_email: deardooley@gmail.com
       tags:
         - cert
         - issuers
